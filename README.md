@@ -18,8 +18,9 @@ TLPicker会尝试根据传入的KeyPath解析Data(Array, Dictionary或实体类�
 example: @"->provices.name->cities.name"
 
 
-## 使用
-
+使用
+==============
+'''
 TLPicker *picker = [TLPicker pickDateForView:self.view initialDate:[NSDate date] selectedBlock:^BOOL(BOOL isCancel, NSDate *date) {
         if (isCancel) {
             return YES;
@@ -29,3 +30,4 @@ TLPicker *picker = [TLPicker pickDateForView:self.view initialDate:[NSDate date]
         return YES;
     }];
 [picker show:YES];
+'''
