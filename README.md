@@ -38,7 +38,7 @@ BOOL返回值的结果决定了在执行block后是否隐藏选择器
 
 
 
-###### 不联动的线性结构的选择器
+###### 非联动的线性结构的选择器
 ```objc
 [[TLPicker pickLinearData:data
                       forView:self.view selectedBlock:^BOOL(BOOL isCancel, NSArray<NSString *> *selectedTitles, NSArray<NSNumber *> *indexs) {
