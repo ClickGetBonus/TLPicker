@@ -48,7 +48,7 @@ BOOL返回值的结果决定了在执行block后是否隐藏选择器
 ```
 [[TLPicker pickEntity:entity
              inputKeyPath:@"->provinces.name->cities.name->areas.name"
-            outputKeyPath:@"->provinces.id->cities.name->areas.id"
+            outputKeyPath:@"->provinces.id->cities.id->areas.id"
                   forView:self.view
             selectedBlock:^BOOL(BOOL isCancel, NSArray<NSString *> *results, NSArray<NSNumber *> *indexs) {
                 
