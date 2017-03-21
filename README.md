@@ -20,8 +20,6 @@ example: @"->provices.name->cities.name"
 
 ## 使用
 
-'''
-
 TLPicker *picker = [TLPicker pickDateForView:self.view initialDate:[NSDate date] selectedBlock:^BOOL(BOOL isCancel, NSDate *date) {
         if (isCancel) {
             return YES;
@@ -30,5 +28,4 @@ TLPicker *picker = [TLPicker pickDateForView:self.view initialDate:[NSDate date]
         NSLog(@"选择的日期是: %@", date);
         return YES;
     }];
-    [picker show:YES];
-'''
+[picker show:YES];
