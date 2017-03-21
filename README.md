@@ -8,18 +8,6 @@
 
 在TLPicker中只要给出需要显示和返回的一段"keyPath"即可完成上述的工作.
 
-## KeyPath
-TLPicker会尝试根据传入的KeyPath解析Data(Array, Dictionary或实体类都可), 如果解析失败会从控制台打印出失败信息和原因.
-
-### KeyPath指令
-> '->' 代表往下解析
-
-> '.'代表取出当前数组元素的某个值作为目标
-
-> (ps: '.'的个数代表picker组件的个数, 所以使用'.'指令时当前所在的位置必须是Array)
-
-`NSString *keyPath = @"->provices.name->cities.name";`
-
 
 ## 使用
 
@@ -69,6 +57,15 @@ BOOL返回值的结果决定了在执行block后是否隐藏选择器
                 
             }] show:YES];
 ```
+
+## KeyPath
+TLPicker会尝试根据传入的KeyPath解析Data(Array, Dictionary或实体类都可)
+
+#### KeyPath指令
+> '->'  代表往下解析 
+
+> '.'  代表取出当前数组元素的某个值作为目标   (ps: '.'的个数代表picker组件的个数, 所以使用'.'指令时当前所在的位置必须是Array) 
+
 
 ## 注意
 
