@@ -15,19 +15,67 @@ TLPicker会尝试根据传入的KeyPath解析Data(Array, Dictionary或实体类�
 '->' 代表往下解析
 '.'代表取出当前数组元素的某个值作为目标(ps: '.'的个数代表picker组件的个数, 所以使用'.'指令时当前所在的位置必须是Array)
 
-example: @"->provices.name->cities.name"
+`NSString *keyPath = @"->provices.name->cities.name";`
 
 
 ## 使用
-```
+
+###### 日期选择器
+```objc
 TLPicker *picker = [TLPicker pickDateForView:self.view initialDate:[NSDate date] selectedBlock:^BOOL(BOOL isCancel, NSDate *date) {
         if (isCancel) {
             return YES;
         }
         
-        NSLog(@"选择的日期是: %@", date);
-        return YES;
+        //do something
+        
     }];
 [picker show:YES];
 ```
+
+
+BOOL返回值的结果决定了在执行block后是否隐藏选择器
+
+
+
+###### 不联动的线性结构的选择器
+```objc
+[[TLPicker pickLinearData:data
+                      forView:self.view selectedBlock:^BOOL(BOOL isCancel, NSArray<NSString *> *selectedTitles, NSArray<NSNumber *> *indexs) {
+                          
+                          //do something
+                          
+                          return YES;
+                          
+                      }] show:YES];
+```
+
+
+
+###### 多级联动选择器
+```
+[[TLPicker pickEntity:entity
+             inputKeyPath:@"->provinces.name->cities.name->areas.name"
+            outputKeyPath:@"->provinces.id->cities.name->areas.id"
+                  forView:self.view
+            selectedBlock:^BOOL(BOOL isCancel, NSArray<NSString *> *results, NSArray<NSNumber *> *indexs) {
+                
+                //do something
+                
+                return YES;
+                
+            }] show:YES];
+```
+
+## 注意
+
+keyPath仅是一段字符串, 没法在编译时给予足够的操作错误提示, 但可以在调试时查看控制台的错误信息找到问题所在
+## 系统要求
+
+该项目最低支持 iOS 6.0 和 Xcode 7.0。
+
+
+## 许可证
+
+YYCategories 使用 MIT 许可证，详情见 LICENSE 文件。
 
