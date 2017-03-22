@@ -2,7 +2,7 @@
 //  TLPicker.m
 //
 //  Created by Ian on 16/3/28.
-//  Copyright © 2016年 Guangzhou Shiny Read Education Technology  Shiny Read Education. All rights reserved.
+//  Copyright © 2016年 Guangzhou Shiny Read Education Technology Shiny Read Education. All rights reserved.
 //
 
 #import "TLPicker.h"
