@@ -26,7 +26,7 @@ TLPicker *picker = [TLPicker pickDateForView:self.view initialDate:[NSDate date]
 ```
 
 
-BOOL返回值的结果决定了在执行block后是否隐藏选择器
+> BOOL返回值的结果决定了在执行block后是否隐藏选择器
 
 
 
