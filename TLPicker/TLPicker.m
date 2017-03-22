@@ -57,7 +57,7 @@ typedef NS_ENUM(NSInteger, DataStructure)
 
 
 @property (nonatomic, copy) id sourceData;
-@property (nonatomic, copy) NSArray *pickerData;
+@property (nonatomic, copy) NSArray<NSArray< NSString *> *> *pickerData;
 
 /**
  *  User By Multiple Structure
@@ -69,7 +69,7 @@ typedef NS_ENUM(NSInteger, DataStructure)
 @property (nonatomic, copy) NSString *inputKeyPath;
 @property (nonatomic, copy) NSString *outputKeyPath;
 
-@property (nonatomic, strong) NSMutableArray *selectedIndexArray;
+@property (nonatomic, strong) NSMutableArray *selectedIndexs;
 
 @end
 
@@ -84,7 +84,7 @@ typedef NS_ENUM(NSInteger, DataStructure)
     TLPicker *datePicker = [[TLPicker alloc] initWithFrame:view.bounds type:TLPickerTypeDate];
     [view addSubview:datePicker];
     
-    datePicker.initialDate = date;
+    datePicker.initialDate = date ? date : [NSDate date];
     datePicker.selectedBlockDate = selectedBlock;
     datePicker.pickerState = PickerViewStateLoaded;
     
@@ -92,7 +92,7 @@ typedef NS_ENUM(NSInteger, DataStructure)
 }
 
 
-+ (instancetype)pickLinearData:(NSArray *)data forView:(UIView *)view selectedBlock:(TLSelectedBlockNormal)selectedBlock
++ (instancetype)pickLinearData:(NSArray<NSString *> *)data forView:(UIView *)view selectedBlock:(TLSelectedBlockNormal)selectedBlock
 {
     
     TLPicker *pickerView = [[TLPicker alloc] initWithFrame:view.bounds type:TLPickerTypeNormal];
@@ -108,7 +108,7 @@ typedef NS_ENUM(NSInteger, DataStructure)
     return pickerView;
 }
 
-+ (instancetype)pickEntity:(NSObject *)entity
++ (instancetype)pickEntity:(id)entity
               inputKeyPath:(NSString *)inputKeyPath
              outputKeyPath:(NSString *)outputKeyPath
                    forView:(UIView *)view
@@ -116,7 +116,7 @@ typedef NS_ENUM(NSInteger, DataStructure)
 {
     
     TLPicker *pickerView = [[TLPicker alloc] initWithFrame:view.bounds
-                                                              type:TLPickerTypeNormal];
+                                                      type:TLPickerTypeNormal];
     
     [view addSubview:pickerView];
     
@@ -201,7 +201,7 @@ typedef NS_ENUM(NSInteger, DataStructure)
 }
 
 
-#pragma mark - Input
+#pragma mark - Input Configure
 - (void)analysisData:(id)data
 {
     
@@ -259,7 +259,7 @@ typedef NS_ENUM(NSInteger, DataStructure)
                 }
                 case DataStructureMultiple: {
                     titles = [[self getOutputArray] mutableCopy];
-                    indexs = self.selectedIndexArray;
+                    indexs = self.selectedIndexs;
                     break;
                 }
             }
@@ -442,13 +442,13 @@ typedef NS_ENUM(NSInteger, DataStructure)
     return _pickerView;
 }
 
-- (Extracter *)getRecursionModelWithLayer:(NSUInteger)layer rootModel:(Extracter *)rootModel {
+- (Extracter *)getExtracterModelByHierarchy:(NSUInteger)hierarchy rootModel:(Extracter *)rootModel {
     
     Extracter *tempModel = rootModel;
-    for (int i=0; i<layer; i++) {
+    for (int i=0; i<hierarchy; i++) {
         
         NSArray *array = tempModel.content;
-        NSInteger selectedIndex = [self.selectedIndexArray[i] integerValue];
+        NSInteger selectedIndex = [self.selectedIndexs[i] integerValue];
         tempModel = array[selectedIndex];
     }
     
@@ -456,18 +456,17 @@ typedef NS_ENUM(NSInteger, DataStructure)
 }
 
 
-
-
 - (NSArray *)getOutputArray {
     
     NSMutableArray *outputArray = [NSMutableArray array];
     
-    for (int i=0; i<self.selectedIndexArray.count; i++) {
+    Extracter *model = self.outputDataModel;
+    for (int i=0; i<self.selectedIndexs.count; i++) {
         
-        NSInteger selectedIndex = [self.selectedIndexArray[i] integerValue];
-        Extracter *model = [self getRecursionModelWithLayer:i rootModel:self.outputDataModel];
+        NSInteger selectedIndex = [self.selectedIndexs[i] integerValue];
         
-        NSString *name = model.content[selectedIndex].value;
+        model = model.content[selectedIndex];
+        NSString *name = model.value;
         [outputArray addObject:name];
     }
     
@@ -498,16 +497,97 @@ typedef NS_ENUM(NSInteger, DataStructure)
     [self.datePicker setDatePickerMode:datePickerMode];
 }
 
+- (void)selectRow:(NSInteger)row inComponent:(NSInteger)component animation:(BOOL)animation {
+    switch (self.dataStructure) {
+        case DataStructureLinear: {
+            [self.pickerView selectRow:row inComponent:component animated:animation];
+        }
+            break;
+        case DataStructureMultiple: {
+            if (component>=self.selectedIndexs.count) {
+                return;
+            }
+            
+            //更改选择时需要维护selectedIndexs并解决越界问题
+            Extracter *model = [self getExtracterModelByHierarchy:component rootModel:self.inputDataModel];
+            
+            NSInteger index = row;
+            if (index > model.content.count-1) {
+                index = 0;
+                DLog(@"TLPicker 选择row:%d, component:%d 时发生越界", row, component);
+            }
+            
+            self.selectedIndexs[component] = @(index);
+            
+            for (int i=component+1; i<self.selectedIndexs.count; i++) {
+                self.selectedIndexs[i] = @0;
+                [self.pickerView reloadComponent:i];
+            }
+            [self.pickerView selectRow:index inComponent:component animated:animation];
+        }
+            break;
+    }
+}
+
+- (void)selectIndexs:(NSArray<NSNumber *> *)indexs animation:(BOOL)animation {
+    
+    for (int i=0; i<indexs.count; i++) {
+        [self selectRow:[indexs[i] integerValue] inComponent:i animation:animation];
+    }
+}
+
 - (void)setSectionCount:(NSInteger)sectionCount {
     if (_sectionCount != sectionCount) {
-        self.selectedIndexArray = [NSMutableArray arrayWithCapacity: sectionCount];
+        self.selectedIndexs = [NSMutableArray arrayWithCapacity: sectionCount];
         for (int i=0; i<sectionCount; i++) {
-            [self.selectedIndexArray addObject:@(0)];
+            [self.selectedIndexs addObject:@(0)];
         }
         
         _sectionCount = sectionCount;
     }
 }
+
+- (void)selectValue:(NSString *)value inComponent:(NSInteger)component animation:(BOOL)animation {
+    if (self.dataStructure == DataStructureLinear) {
+        
+        if (component > self.pickerData.count) {
+            return;
+        }
+        
+        NSArray *array = self.pickerData[component];
+        for (int i=0; i<array.count; i++) {
+            
+            if ([array[i] isEqualToString:value]) {
+                [self selectRow:i inComponent:component animation:animation];
+            }
+        }
+    } else {
+        Extracter *ext = [self getExtracterModelByHierarchy:component rootModel:self.inputDataModel];
+        for (int i=0; i<ext.content.count; i++) {
+            Extracter *subExt = ext.content[i];
+            if ([subExt.value isEqualToString:value]) {
+                [self selectRow:i inComponent:component animation:animation];
+                return;
+            }
+        }
+        
+        ext = [self getExtracterModelByHierarchy:component rootModel:self.outputDataModel];
+        for (int i=0; i<ext.content.count; i++) {
+            Extracter *subExt = ext.content[i];
+            if ([subExt.value isEqualToString:value]) {
+                [self selectRow:i inComponent:component animation:animation];
+                return;
+            }
+        }
+    }
+}
+
+- (void)selectValues:(NSArray <NSString *> *)values animation:(BOOL)animation {
+    for (int i=0; i<values.count; i++) {
+        [self selectValue:values[i] inComponent:i animation:animation];
+    }
+}
+
 
 #pragma mark - PickerView Delegate
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
@@ -519,7 +599,7 @@ typedef NS_ENUM(NSInteger, DataStructure)
             return dataArray.count;
         }
         case DataStructureMultiple: {
-            Extracter *model = [self getRecursionModelWithLayer:component rootModel:self.inputDataModel];
+            Extracter *model = [self getExtracterModelByHierarchy:component rootModel:self.inputDataModel];
             return model.content.count;
         }
     }
@@ -554,7 +634,8 @@ typedef NS_ENUM(NSInteger, DataStructure)
             return _pickerData[component][row];
         }
         case DataStructureMultiple: {
-            Extracter *model = [self getRecursionModelWithLayer:component rootModel:self.inputDataModel];
+            Extracter *model = [self getExtracterModelByHierarchy:component
+                                                        rootModel:self.inputDataModel];
             return model.content[row].value;
         }
     }
@@ -564,10 +645,10 @@ typedef NS_ENUM(NSInteger, DataStructure)
 {
     if (self.dataStructure == DataStructureMultiple)
     {
-        [self.selectedIndexArray setObject:@(row) atIndexedSubscript:component];
+        [self.selectedIndexs setObject:@(row) atIndexedSubscript:component];
         
         for (NSInteger i=component+1; i<self.sectionCount; i++) {
-            [self.selectedIndexArray setObject:@(0) atIndexedSubscript:i];
+            [self.selectedIndexs setObject:@(0) atIndexedSubscript:i];
             [pickerView reloadComponent:i];
             [pickerView selectRow:0 inComponent:i animated:YES];
         }

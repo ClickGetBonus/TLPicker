@@ -56,7 +56,7 @@ typedef NS_ENUM(NSInteger, PickerViewState) {
 /**
  *  用于线性的数据结构,data支持种数据结构:NSArray<NSString>,NSArray<NSArray<NSString>>
  */
-+ (instancetype)pickLinearData:(NSArray *)data forView:(UIView *)view selectedBlock:(TLSelectedBlockNormal)selectedBlock;
++ (instancetype)pickLinearData:(NSArray<NSString *> *)data forView:(UIView *)view selectedBlock:(TLSelectedBlockNormal)selectedBlock;
 
 
 /**
@@ -68,7 +68,7 @@ typedef NS_ENUM(NSInteger, PickerViewState) {
  *  keyPath指令: "->"代表往下解析, "."代表取出当前数组元素的某个值作为目标, "."的个数代表pickerView组件的个数
  *  example: @"->provices.name->cities.name"
  */
-+ (instancetype)pickEntity:(NSObject *)entity
++ (instancetype)pickEntity:(id)entity
               inputKeyPath:(NSString *)inputKeyPath
              outputKeyPath:(NSString *)outputKeyPath
                    forView:(UIView *)view
@@ -84,6 +84,15 @@ typedef NS_ENUM(NSInteger, PickerViewState) {
 - (UIPickerView *)pickerView;
 
 - (UIDatePicker *)datePicker;
+
+//用下标来改变pickerView的当前选择(越界时选择0)
+- (void)selectRow:(NSInteger)row inComponent:(NSInteger)component animation:(BOOL)animation;
+- (void)selectIndexs:(NSArray<NSNumber *> *)indexs animation:(BOOL)animation;
+
+//用特定的值来改变pickerView的当前选择
+- (void)selectValue:(NSString *)value inComponent:(NSInteger)component animation:(BOOL)animation;
+- (void)selectValues:(NSArray <NSString *> *)values animation:(BOOL)animation;
+
 
 
 @end
