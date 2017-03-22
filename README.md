@@ -26,11 +26,11 @@ TLPicker *picker = [TLPicker pickDateForView:self.view initialDate:[NSDate date]
 ```
 
 
-> BOOL返回值的结果决定了在执行block后是否隐藏选择器
+> SelectedBlock 中的BOOL返回值决定了在执行block后是否隐藏选择器
 
 
 
-###### 非联动的线性结构的选择器
+###### 非联动的线性结构的选择器 , data可以是一维数组也可以是二维数组
 ```objc
 [[TLPicker pickLinearData:data
                       forView:self.view selectedBlock:^BOOL(BOOL isCancel, NSArray<NSString *> *selectedTitles, NSArray<NSNumber *> *indexs) {
@@ -44,7 +44,7 @@ TLPicker *picker = [TLPicker pickDateForView:self.view initialDate:[NSDate date]
 
 
 
-###### 多级联动选择器
+###### 多级联动选择器(entity可以是Array, Dictionary或者实体类)
 ```
 [[TLPicker pickEntity:entity
              inputKeyPath:@"->provinces.name->cities.name->areas.name"
