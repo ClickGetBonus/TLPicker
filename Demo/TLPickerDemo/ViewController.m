@@ -34,6 +34,7 @@ UITableViewDataSource
 
 
 #pragma mark - TLPicker Usage
+//日期选择
 - (void)pickDate {
     TLPicker *picker = [TLPicker pickDateForView:self.view initialDate:[NSDate date] selectedBlock:^BOOL(BOOL isCancel, NSDate *date) {
         
@@ -47,9 +48,10 @@ UITableViewDataSource
     [picker show:YES];
 }
 
+//单列数据
 - (void)pickSingleComponentData {
     
-    NSArray *data = @[@"男", @"女"];
+    NSArray *data = @[@"男", @"女", @"其他"];
     [[TLPicker pickLinearData:data
                       forView:self.view selectedBlock:^BOOL(BOOL isCancel, NSArray<NSString *> *selectedTitles, NSArray<NSNumber *> *indexs) {
                           if (isCancel) {
@@ -62,6 +64,7 @@ UITableViewDataSource
                       }] show:YES];
 }
 
+//多列数据(不联动)
 - (void)pickMultipleComponentData {
     NSArray *data = @[@[@"性别", @"男", @"女", @"其他"],
                       @[@"血型", @"A", @"B", @"AB", @"O"],
@@ -88,10 +91,11 @@ UITableViewDataSource
                           return YES;
                           
                       }];
-    [picker selectValues:@[@"男", @"A"] animation:YES];
+//    [picker selectValues:@[@"男", @"A"] animation:YES];
     [picker show:YES];
 }
 
+//多级联动
 - (void)pickEntity {
     
     //entity可以是Dictionary, Array或实体类

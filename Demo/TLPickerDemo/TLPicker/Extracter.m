@@ -21,14 +21,14 @@ NS_ENUM(NSInteger, ExtracterOrder) {
 
 - (instancetype)init {
     if (self = [super init]) {
-        _content = [NSMutableArray array];
+        _subExts = [NSMutableArray array];
     }
     return self;
 }
 
 - (instancetype)initWithValue:(NSString *)value {
     if (self = [self init]) {
-        self.value = value;
+        _value = value;
     }
     return self;
 }
@@ -110,7 +110,8 @@ NS_ENUM(NSInteger, ExtracterOrder) {
                                  keyPath:[keyPath substringFromIndex:orderLength + key.length]];
                 [contents addObject:extrancter];
             }
-            self.content = contents;
+            
+            self.subExts = contents;
         }
             break;
         default:

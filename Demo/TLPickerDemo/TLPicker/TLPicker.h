@@ -89,10 +89,9 @@ typedef NS_ENUM(NSInteger, PickerViewState) {
 - (void)selectRow:(NSInteger)row inComponent:(NSInteger)component animation:(BOOL)animation;
 - (void)selectIndexs:(NSArray<NSNumber *> *)indexs animation:(BOOL)animation;
 
-//用特定的值来改变pickerView的当前选择
+//用特定的值来改变pickerView的当前选择(inputKey或outputKey均可)
 - (void)selectValue:(NSString *)value inComponent:(NSInteger)component animation:(BOOL)animation;
 - (void)selectValues:(NSArray <NSString *> *)values animation:(BOOL)animation;
-
 
 
 @end

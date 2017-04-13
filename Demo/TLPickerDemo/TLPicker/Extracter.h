@@ -14,7 +14,7 @@
 @interface Extracter : NSObject
 
 @property (nonatomic, copy) NSString *value;
-@property (nonatomic, strong) NSMutableArray <Extracter *> * content;
+@property (nonatomic, strong) NSMutableArray <Extracter *> * subExts;
 
 - (instancetype)initWithValue:(NSString *)value;
 

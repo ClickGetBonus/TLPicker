@@ -447,7 +447,7 @@ typedef NS_ENUM(NSInteger, DataStructure)
     Extracter *tempModel = rootModel;
     for (int i=0; i<hierarchy; i++) {
         
-        NSArray *array = tempModel.content;
+        NSArray *array = tempModel.subExts;
         NSInteger selectedIndex = [self.selectedIndexs[i] integerValue];
         tempModel = array[selectedIndex];
     }
@@ -465,7 +465,7 @@ typedef NS_ENUM(NSInteger, DataStructure)
         
         NSInteger selectedIndex = [self.selectedIndexs[i] integerValue];
         
-        model = model.content[selectedIndex];
+        model = model.subExts[selectedIndex];
         NSString *name = model.value;
         [outputArray addObject:name];
     }
@@ -512,7 +512,7 @@ typedef NS_ENUM(NSInteger, DataStructure)
             Extracter *model = [self getExtracterModelByHierarchy:component rootModel:self.inputDataModel];
             
             NSInteger index = row;
-            if (index > model.content.count-1) {
+            if (index > model.subExts.count-1) {
                 index = 0;
                 DLog(@"TLPicker 选择row:%d, component:%d 时发生越界", row, component);
             }
@@ -563,8 +563,8 @@ typedef NS_ENUM(NSInteger, DataStructure)
         }
     } else {
         Extracter *ext = [self getExtracterModelByHierarchy:component rootModel:self.inputDataModel];
-        for (int i=0; i<ext.content.count; i++) {
-            Extracter *subExt = ext.content[i];
+        for (int i=0; i<ext.subExts.count; i++) {
+            Extracter *subExt = ext.subExts[i];
             if ([subExt.value isEqualToString:value]) {
                 [self selectRow:i inComponent:component animation:animation];
                 return;
@@ -572,8 +572,8 @@ typedef NS_ENUM(NSInteger, DataStructure)
         }
         
         ext = [self getExtracterModelByHierarchy:component rootModel:self.outputDataModel];
-        for (int i=0; i<ext.content.count; i++) {
-            Extracter *subExt = ext.content[i];
+        for (int i=0; i<ext.subExts.count; i++) {
+            Extracter *subExt = ext.subExts[i];
             if ([subExt.value isEqualToString:value]) {
                 [self selectRow:i inComponent:component animation:animation];
                 return;
@@ -600,7 +600,7 @@ typedef NS_ENUM(NSInteger, DataStructure)
         }
         case DataStructureMultiple: {
             Extracter *model = [self getExtracterModelByHierarchy:component rootModel:self.inputDataModel];
-            return model.content.count;
+            return model.subExts.count;
         }
     }
 }
@@ -636,7 +636,7 @@ typedef NS_ENUM(NSInteger, DataStructure)
         case DataStructureMultiple: {
             Extracter *model = [self getExtracterModelByHierarchy:component
                                                         rootModel:self.inputDataModel];
-            return model.content[row].value;
+            return model.subExts[row].value;
         }
     }
 }

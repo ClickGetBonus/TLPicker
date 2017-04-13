@@ -96,7 +96,8 @@
 				3FFB1FAF1E814DBD00F2DFA4 /* Extracter.m */,
 				3FFB1FB21E814DBD00F2DFA4 /* TLUtil.h */,
 			);
-			path = TLPickerView;
+			name = TLPickerView;
+			path = TLPicker;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
